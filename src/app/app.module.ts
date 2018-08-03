@@ -25,6 +25,9 @@ import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.com
 // Sub components
 import { StopTrainingComponent } from "./training/current-training/stop-training/stop-training.component";
 
+import { AuthService } from "./auth/mocks/auth.service";
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,7 +51,7 @@ import { StopTrainingComponent } from "./training/current-training/stop-training
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent],
   entryComponents: [StopTrainingComponent]
 })
