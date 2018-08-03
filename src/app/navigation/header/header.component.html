@@ -19,7 +19,7 @@
         <a *ngIf="isAuth" routerLink="/training">Training</a>
       </li>
       <li>
-        <a *ngIf="isAuth" (click)="onLogout()">Logout</a>
+        <a style="cursor: pointer" *ngIf="isAuth" (click)="onLogout()">Logout</a>
       </li>
     </ul>
   </div>
