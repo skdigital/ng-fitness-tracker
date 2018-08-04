@@ -22,7 +22,6 @@ export class TextToSpeechService {
     this.message.volume = volume || 1;
     this.message.pitch = pitch || 0;
 
-
     // Speaks text
     speechSynthesis.speak(this.message);
   }

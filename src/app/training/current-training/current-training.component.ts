@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import {TrainingService} from '../training.service';
 import {TextToSpeechService} from '../../services/text-speech/text-speech.service';
@@ -12,8 +12,6 @@ import { StopTrainingComponent } from './stop-training/stop-training.component';
   styleUrls: ['./current-training.component.css']
 })
 export class CurrentTrainingComponent implements OnInit {
-
-  @Output() trainingExit = new EventEmitter<void>();
 
   progress = 0;
   timer;
@@ -30,13 +28,18 @@ export class CurrentTrainingComponent implements OnInit {
 
   startOrResumeTime() {
 
-    this._textToSpeech.newVoiceMessage('Training Start', 'en-GB');
+    // Custom service with text to speech voice output
+    this._textToSpeech.newVoiceMessage('Training Started');
 
     const step = this._trainingService.getActiveExercise().duration / 100 * 1000;
     console.log(step);
     this.timer = setInterval(() => {
       this.progress = this.progress + 1;
       if (this.progress >= 100) {
+
+        this._textToSpeech.newVoiceMessage('Exercise completed!');
+
+        this._trainingService.completeExercise();
         clearInterval(this.timer);
       }
     }, step);
@@ -52,7 +55,7 @@ export class CurrentTrainingComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.trainingExit.emit();
+        this._trainingService.cancelExercise(this.progress);
       } else {
         this.startOrResumeTime();
         this._dialog.closeAll();
