@@ -7,7 +7,7 @@ import { LoginComponent } from "./auth/login/login.component";
 import { TrainingComponent } from "./training/training.component";
 
 // Guards
-import { AuthGuard } from "./auth/mocks/auth.guard";
+import { AuthGuard } from "./auth/auth.guard";
 
 const routes: Routes = [
     { path: '', component: WelcomeComponent },

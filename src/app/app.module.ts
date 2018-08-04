@@ -1,14 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // UI
-import { MaterialModule } from "./material.module";
+import { MaterialModule } from './material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FlexLayoutModule } from "@angular/flex-layout";
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 // Routing
-import { AppRoutingModule } from "./app-routing.module";
+import { AppRoutingModule } from './app-routing.module';
 
 // Components
 import { AppComponent } from './app.component';
@@ -23,9 +23,12 @@ import { HeaderComponent } from './navigation/header/header.component';
 import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 
 // Sub components
-import { StopTrainingComponent } from "./training/current-training/stop-training/stop-training.component";
+import { StopTrainingComponent } from './training/current-training/stop-training/stop-training.component';
 
-import { AuthService } from "./auth/mocks/auth.service";
+// Services
+import { AuthService } from './auth/auth.service';
+import { TrainingService } from './training/training.service';
+import { TextToSpeechService } from './services/text-speech/text-speech.service';
 
 
 @NgModule({
@@ -51,7 +54,11 @@ import { AuthService } from "./auth/mocks/auth.service";
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    TrainingService,
+    TextToSpeechService
+  ],
   bootstrap: [AppComponent],
   entryComponents: [StopTrainingComponent]
 })
