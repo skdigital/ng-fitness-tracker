@@ -56,6 +56,7 @@ export class CurrentTrainingComponent implements OnInit {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this._trainingService.cancelExercise(this.progress);
+        this._textToSpeech.newVoiceMessage('Training Cancelled')
       } else {
         this.startOrResumeTime();
         this._dialog.closeAll();

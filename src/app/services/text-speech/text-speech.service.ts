@@ -19,7 +19,7 @@ export class TextToSpeechService {
     // sets options (optional arguments)
     this.message.voice = this.voices[3];
     this.message.lang = lang || 'de-GER';
-    this.message.volume = volume || 1;
+    this.message.volume = volume || 5;
     this.message.pitch = pitch || 0;
 
     // Speaks text
