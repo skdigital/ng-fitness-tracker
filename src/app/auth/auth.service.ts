@@ -1,8 +1,8 @@
-import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
-import { User } from './user.model'
-import { AuthData } from './auth-data.model'
-import { Subject } from "rxjs";
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { User } from './user.model';
+import { AuthData } from './auth-data.model';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +16,7 @@ export class AuthService {
         this.user = {
             email: authData.email,
             userId: Math.round(Math.random() * 10000).toString()
-        }
+        };
         this.authSuccess();
         this.consoleLogAuthState();
     }
@@ -25,7 +25,7 @@ export class AuthService {
         this.user = {
             email: authData.email,
             userId: Math.round(Math.random() * 10000).toString()
-        }
+        };
         this.authSuccess();
         this.consoleLogAuthState();
     }
@@ -33,7 +33,7 @@ export class AuthService {
     logout() {
         this.user = null;
         this.authChange.next(false);
-        this._router.navigate(['/login'])
+        this._router.navigate(['/login']);
         this.consoleLogAuthState();
     }
 
@@ -49,14 +49,14 @@ export class AuthService {
     // 2. navigates to /training
     private authSuccess() {
         this.authChange.next(true);
-        this._router.navigate(['/training'])
+        this._router.navigate(['/training']);
     }
 
     // helper method for debugging authstate state
     // console logs the authstate when called.
     private consoleLogAuthState() {
         this.authChange.subscribe((data) => {
-            console.log(`User is authenticated: ${data}`)
+            console.log(`User is authenticated: ${data}`);
         });
     }
 }

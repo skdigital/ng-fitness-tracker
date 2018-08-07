@@ -2,6 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+// Backend As A Service Firebase (angular fire 2)
+import {AngularFireModule} from 'angularfire2';
+import {AngularFirestoreModule} from 'angularfire2/firestore';
+import {environment} from '../environments/environment';
+
 // UI
 import { MaterialModule } from './material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -31,6 +36,8 @@ import { TrainingService } from './training/training.service';
 import { TextToSpeechService } from './services/text-speech/text-speech.service';
 
 
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -52,7 +59,9 @@ import { TextToSpeechService } from './services/text-speech/text-speech.service'
     BrowserAnimationsModule,
     FlexLayoutModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule
   ],
   providers: [
     AuthService,
