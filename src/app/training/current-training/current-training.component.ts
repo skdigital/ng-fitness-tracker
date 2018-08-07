@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import {TrainingService} from '../training.service';
-import {TextToSpeechService} from '../../services/text-speech/text-speech.service';
+import {TextToSpeechService} from '../../shared/text-speech/text-speech.service';
 // Sub component
 import { StopTrainingComponent } from './stop-training/stop-training.component';
 

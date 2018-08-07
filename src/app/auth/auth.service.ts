@@ -4,9 +4,13 @@ import {AuthData} from './auth-data.model';
 import {Subject} from 'rxjs';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {TrainingService} from '../training/training.service';
+import {MatSnackBar} from '@angular/material';
+import {UiService} from '../shared/global-ui/ui.service';
 
 @Injectable()
 export class AuthService {
+
+  // public error message prop string, used for snack bar in login/signup forms
 
   public authChange = new Subject<boolean>();
   private isAuthenticated: Boolean = false;
@@ -14,8 +18,11 @@ export class AuthService {
   constructor(
     private _router: Router,
     private _afAuth: AngularFireAuth,
-    private _trainingService: TrainingService
-  ) { }
+    private _trainingService: TrainingService,
+    private _snackBar: MatSnackBar,
+    private _uiService: UiService
+  ) {
+  }
 
   initAuthListener() {
     this._afAuth.authState.subscribe(user => {
@@ -33,23 +40,33 @@ export class AuthService {
   }
 
   registerUser(authData: AuthData) {
+    this._uiService.loadingStateChanged.next(true);
     this._afAuth.auth.createUserWithEmailAndPassword(authData.email, authData.password)
       .then(res => {
+        this._uiService.loadingStateChanged.next(false);
         this._router.navigate(['/training']);
       })
       .catch(error => {
-        console.log(error);
+        this._uiService.loadingStateChanged.next(false);
+        this._snackBar.open(error.message, 'Error', {
+          duration: 5000
+        });
       });
   }
 
   login(authData: AuthData) {
+    this._uiService.loadingStateChanged.next(true);
     this._afAuth.auth
       .signInWithEmailAndPassword(authData.email, authData.password)
       .then(res => {
+        this._uiService.loadingStateChanged.next(false);
         this._router.navigate(['/training']);
       })
       .catch(error => {
-        console.log(error);
+        this._uiService.loadingStateChanged.next(false);
+        this._snackBar.open(error.message, 'Error', {
+          duration: 5000
+        });
       });
   }
 
@@ -63,7 +80,7 @@ export class AuthService {
 
   // helper method for debugging authstate state
   // console logs the authstate when called.
-    consoleLogAuthState() {
+  consoleLogAuthState() {
     this.authChange.subscribe((data) => {
       console.log(`User is authenticated: ${data}`);
     });

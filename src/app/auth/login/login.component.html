@@ -1,4 +1,4 @@
-<section>
+<section >
   <form
   [formGroup]="loginForm"
   fxLayoutGap="12px"
@@ -25,6 +25,7 @@
       <mat-hint>Please enter your password.</mat-hint>
       <mat-error>Missing password</mat-error>
     </mat-form-field>
-    <button [disabled]="loginForm.invalid" mat-raised-button color="primary" type="submit">Login</button>
+    <button *ngIf="!loadingState" [disabled]="loginForm.invalid" mat-raised-button color="primary" type="submit">Login</button>
+      <mat-spinner [diameter]="60" *ngIf="loadingState"></mat-spinner>
   </form>
 </section>
