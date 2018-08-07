@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import {Exercise} from './exercise.model';
 import {map} from 'rxjs/operators';
 import {AngularFirestore} from 'angularfire2/firestore';
@@ -11,8 +11,10 @@ export class TrainingService {
   availableExercisesChanged = new Subject<Exercise[]>();
   finishedExerciseChanged = new Subject<Exercise[]>();
 
-  private availableExercises: Exercise[] = []; // all available exercises currently listed in fire-store
-  private runningExercise: Exercise; // the currently running or active exercise
+  private availableExercises: Exercise[] = []; // all available exercises currently listed in fire-store.
+  private runningExercise: Exercise; // the currently running or active exercise.
+
+  private fbSubs: Subscription[] = []; // used for un-subscribing on logout.
 
   constructor(private _afs: AngularFirestore) {
     this.fetchAvailableExercises();
@@ -21,7 +23,8 @@ export class TrainingService {
 
   // fetch available types of exercises from firestore
   fetchAvailableExercises() {
-    this._afs.collection('availableExercises')
+    this.fbSubs.push(this._afs
+      .collection('availableExercises')
       .snapshotChanges()
       .pipe(
         map(docArray => {
@@ -35,19 +38,20 @@ export class TrainingService {
           });
         }))
       .subscribe((exercises: Exercise[]) => {
-        console.log(exercises);
         this.availableExercises = exercises;
         this.availableExercisesChanged.next([...this.availableExercises]);
-      });
+      }));
   }
 
   // fetch finished / completed exercises from firestore
    fetchFinishedExercises() {
-    this._afs.collection('finishedExercises').valueChanges()
-      .subscribe((exercises: Exercise[]) => {
-        this.finishedExerciseChanged.next(exercises);
-      });
-  }
+     this.fbSubs.push(this._afs
+       .collection('finishedExercises')
+       .valueChanges()
+       .subscribe((exercises: Exercise[]) => {
+         this.finishedExerciseChanged.next(exercises);
+       }));
+   }
 
   getAvailableExercises() {
     return [...this.availableExercises];
@@ -85,5 +89,11 @@ export class TrainingService {
 
   private addDataToDatabase(exercise: Exercise) {
     this._afs.collection('finishedExercises').add(exercise);
+  }
+
+  // utilities helper methods
+  // is used for un-subscribing when logging out
+  cancelSubscriptions() {
+    this.fbSubs.forEach(sub => sub.unsubscribe());
   }
 }

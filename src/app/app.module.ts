@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {AngularFireModule} from 'angularfire2';
 import {AngularFirestoreModule} from 'angularfire2/firestore';
 import {environment} from '../environments/environment';
+import {AngularFireAuthModule} from 'angularfire2/auth';
 
 // UI
 import { MaterialModule } from './material.module';
@@ -61,7 +62,8 @@ import { TextToSpeechService } from './services/text-speech/text-speech.service'
     FormsModule,
     ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    AngularFireAuthModule
   ],
   providers: [
     AuthService,
