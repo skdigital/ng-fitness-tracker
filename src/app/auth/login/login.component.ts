@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
 import {AuthService} from '../auth.service';
-import {UiService} from '../../shared/global-ui/ui.service';
+import {UIService} from '../../shared/global-ui/ui.service';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -18,7 +18,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     private _authService: AuthService,
-    private  _uiService: UiService
+    private  _uiService: UIService
   ) {
   }
 
@@ -46,7 +46,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.loadingSubscription.unsubscribe();
+    if ( this.loadingSubscription ) {
+      this.loadingSubscription.unsubscribe();
+    }
   }
-
 }

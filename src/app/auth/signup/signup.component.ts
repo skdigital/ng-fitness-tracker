@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {AuthService} from '../auth.service';
 import {Subscription} from 'rxjs';
-import {UiService} from '../../shared/global-ui/ui.service';
+import {UIService} from '../../shared/global-ui/ui.service';
 
 @Component({
   selector: 'app-signup',
@@ -15,7 +15,7 @@ export class SignupComponent implements OnInit, OnDestroy {
   loadingStateSub: Subscription;
   loadingState: Boolean = false;
 
-  constructor(private _authService: AuthService, private _uiService: UiService) {
+  constructor(private _authService: AuthService, private _uiService: UIService) {
   }
 
   ngOnInit() {
@@ -39,7 +39,9 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.loadingStateSub.unsubscribe();
+    if ( this.loadingStateSub ) {
+      this.loadingStateSub.unsubscribe();
+    }
   }
 
 }

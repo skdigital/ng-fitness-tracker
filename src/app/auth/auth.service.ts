@@ -5,7 +5,7 @@ import {Subject} from 'rxjs';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {TrainingService} from '../training/training.service';
 import {MatSnackBar} from '@angular/material';
-import {UiService} from '../shared/global-ui/ui.service';
+import {UIService} from '../shared/global-ui/ui.service';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +20,7 @@ export class AuthService {
     private _afAuth: AngularFireAuth,
     private _trainingService: TrainingService,
     private _snackBar: MatSnackBar,
-    private _uiService: UiService
+    private _uiService: UIService
   ) {
   }
 
@@ -48,9 +48,7 @@ export class AuthService {
       })
       .catch(error => {
         this._uiService.loadingStateChanged.next(false);
-        this._snackBar.open(error.message, 'Error', {
-          duration: 5000
-        });
+        this._uiService.showSnackBar(error.message, 'Error', 5000);
       });
   }
 
@@ -64,14 +62,13 @@ export class AuthService {
       })
       .catch(error => {
         this._uiService.loadingStateChanged.next(false);
-        this._snackBar.open(error.message, 'Error', {
-          duration: 5000
-        });
+        this._uiService.showSnackBar(error.message, 'Error', 5000);
       });
   }
 
   logout() {
     this._afAuth.auth.signOut();
+    this._uiService.showSnackBar('You have logged out.', 5000);
   }
 
   isAuth() {

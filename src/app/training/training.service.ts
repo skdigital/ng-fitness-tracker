@@ -3,6 +3,7 @@ import {Subject, Subscription} from 'rxjs';
 import {Exercise} from './exercise.model';
 import {map} from 'rxjs/operators';
 import {AngularFirestore} from 'angularfire2/firestore';
+import {UIService} from '../shared/global-ui/ui.service';
 
 @Injectable()
 export class TrainingService {
@@ -16,13 +17,12 @@ export class TrainingService {
 
   private fbSubs: Subscription[] = []; // used for un-subscribing on logout.
 
-  constructor(private _afs: AngularFirestore) {
-    this.fetchAvailableExercises();
-    this.fetchFinishedExercises();
+  constructor(private _afs: AngularFirestore, private _uiService: UIService) {
   }
 
   // fetch available types of exercises from firestore
   fetchAvailableExercises() {
+    this._uiService.loadingStateChanged.next(true);
     this.fbSubs.push(this._afs
       .collection('availableExercises')
       .snapshotChanges()
@@ -38,8 +38,11 @@ export class TrainingService {
           });
         }))
       .subscribe((exercises: Exercise[]) => {
+        this._uiService.loadingStateChanged.next(false);
         this.availableExercises = exercises;
         this.availableExercisesChanged.next([...this.availableExercises]);
+      }, error1 => {
+        this._uiService.showSnackBar('Fetching Exercises failed, please try again later.', 'Error', 5000);
       }));
   }
 

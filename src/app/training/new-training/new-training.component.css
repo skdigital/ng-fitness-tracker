@@ -1,3 +1,7 @@
 .new-training {
     padding: 30px;
 }
+
+mat-spinner {
+  margin: auto;
+}
