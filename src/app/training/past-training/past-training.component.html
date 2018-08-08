@@ -1,4 +1,4 @@
-<div fxLayoutAlign="center center">
+<div class="exercise-table" fxLayoutAlign="center center">
   <mat-form-field fxFlex="40%">
     <input placeholder="Search..." matInput type="text" (keyup)="doFilter($event.target.value)">
   </mat-form-field>
@@ -35,7 +35,7 @@
 </mat-table>
 
 <mat-paginator fxLayoutAlign="center"
-  [length]="100"
-  [pageSize]="25"
-  [pageSizeOptions]="[5, 10, 25, 100]">
+               [length]="100"
+               [pageSize]="25"
+               [pageSizeOptions]="[5, 10, 25, 100]">
 </mat-paginator>
