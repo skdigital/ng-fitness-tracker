@@ -23,6 +23,8 @@
     "@angular/platform-browser": "^6.0.3",
     "@angular/platform-browser-dynamic": "^6.0.3",
     "@angular/router": "^6.0.3",
+    "@ngrx/store": "^6.1.0",
+    "@ngrx/store-devtools": "^3.2.4",
     "angularfire2": "^5.0.0-rc.11",
     "core-js": "^2.5.4",
     "firebase": "^5.3.1",

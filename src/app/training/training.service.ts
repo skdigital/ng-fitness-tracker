@@ -4,6 +4,9 @@ import {Exercise} from './exercise.model';
 import {map} from 'rxjs/operators';
 import {AngularFirestore} from 'angularfire2/firestore';
 import {UIService} from '../shared/global-ui/ui.service';
+import * as fromRoot from '../app.reducer';
+import {Store} from '@ngrx/store';
+import {StartLoading, StopLoading} from '../shared/ui.actions';
 
 @Injectable()
 export class TrainingService {
@@ -17,12 +20,16 @@ export class TrainingService {
 
   private fbSubs: Subscription[] = []; // used for un-subscribing on logout.
 
-  constructor(private _afs: AngularFirestore, private _uiService: UIService) {
+  constructor(
+    private _afs: AngularFirestore,
+    private _uiService: UIService,
+    private _store: Store<fromRoot.State>
+  ) {
   }
 
   // fetch available types of exercises from firestore
   fetchAvailableExercises() {
-    this._uiService.loadingStateChanged.next(true);
+    this._store.dispatch(new StartLoading());
     this.fbSubs.push(this._afs
       .collection('availableExercises')
       .snapshotChanges()
@@ -31,33 +38,34 @@ export class TrainingService {
           return docArray.map(doc => {
             return {
               id: doc.payload.doc.id,
-              name: doc.payload.doc.data()['name'],
-              duration: doc.payload.doc.data()['duration'],
-              calories: doc.payload.doc.data()['calories']
+              name: doc.payload.doc.data()[ 'name' ],
+              duration: doc.payload.doc.data()[ 'duration' ],
+              calories: doc.payload.doc.data()[ 'calories' ]
             };
           });
         }))
       .subscribe((exercises: Exercise[]) => {
-        this._uiService.loadingStateChanged.next(false);
+        this._store.dispatch(new StopLoading());
         this.availableExercises = exercises;
-        this.availableExercisesChanged.next([...this.availableExercises]);
+        this.availableExercisesChanged.next([ ...this.availableExercises ]);
       }, error1 => {
+        this._store.dispatch(new StopLoading());
         this._uiService.showSnackBar('Fetching Exercises failed, please try again later.', 'Error', 5000);
       }));
   }
 
   // fetch finished / completed exercises from firestore
-   fetchFinishedExercises() {
-     this.fbSubs.push(this._afs
-       .collection('finishedExercises')
-       .valueChanges()
-       .subscribe((exercises: Exercise[]) => {
-         this.finishedExerciseChanged.next(exercises);
-       }));
-   }
+  fetchFinishedExercises() {
+    this.fbSubs.push(this._afs
+      .collection('finishedExercises')
+      .valueChanges()
+      .subscribe((exercises: Exercise[]) => {
+        this.finishedExerciseChanged.next(exercises);
+      }));
+  }
 
   getAvailableExercises() {
-    return [...this.availableExercises];
+    return [ ...this.availableExercises ];
   }
 
   startExercise(selectedId: string) {
@@ -81,7 +89,8 @@ export class TrainingService {
       duration: this.runningExercise.duration * (progress / 100),
       calories: this.runningExercise.calories * (progress / 100),
       date: new Date(),
-      state: 'cancelled'});
+      state: 'cancelled'
+    });
     this.runningExercise = null;
     this.exerciseChanged.next(null);
   }

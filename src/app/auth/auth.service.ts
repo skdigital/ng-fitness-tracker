@@ -1,16 +1,17 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
+import {Store} from '@ngrx/store';
 import {AuthData} from './auth-data.model';
 import {Subject} from 'rxjs';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {TrainingService} from '../training/training.service';
 import {MatSnackBar} from '@angular/material';
 import {UIService} from '../shared/global-ui/ui.service';
+import * as fromRoot from '../app.reducer';
+import * as UI from '../shared/ui.actions';
 
 @Injectable()
 export class AuthService {
-
-  // public error message prop string, used for snack bar in login/signup forms
 
   public authChange = new Subject<boolean>();
   private isAuthenticated: Boolean = false;
@@ -20,48 +21,49 @@ export class AuthService {
     private _afAuth: AngularFireAuth,
     private _trainingService: TrainingService,
     private _snackBar: MatSnackBar,
-    private _uiService: UIService
+    private _uiService: UIService,
+    private _store: Store<fromRoot.State>
   ) {
   }
 
   initAuthListener() {
     this._afAuth.authState.subscribe(user => {
-      if (user) {
+      if ( user ) {
         this.isAuthenticated = true;
         this.authChange.next(true);
-        this._router.navigate(['/training']);
+        this._router.navigate([ '/training' ]);
       } else {
         this._trainingService.cancelSubscriptions();
         this.isAuthenticated = false;
         this.authChange.next(false);
-        this._router.navigate(['/login']);
+        this._router.navigate([ '/login' ]);
       }
     });
   }
 
   registerUser(authData: AuthData) {
-    this._uiService.loadingStateChanged.next(true);
+    this._store.dispatch(new UI.StartLoading());
     this._afAuth.auth.createUserWithEmailAndPassword(authData.email, authData.password)
       .then(res => {
-        this._uiService.loadingStateChanged.next(false);
-        this._router.navigate(['/training']);
+        this._router.navigate([ '/training' ]);
+        this._store.dispatch(new UI.StopLoading());
       })
       .catch(error => {
-        this._uiService.loadingStateChanged.next(false);
+        this._store.dispatch({type: 'STOP_LOADING'});
         this._uiService.showSnackBar(error.message, 'Error', 5000);
       });
   }
 
   login(authData: AuthData) {
-    this._uiService.loadingStateChanged.next(true);
+    this._store.dispatch(new UI.StartLoading());
     this._afAuth.auth
       .signInWithEmailAndPassword(authData.email, authData.password)
       .then(res => {
-        this._uiService.loadingStateChanged.next(false);
-        this._router.navigate(['/training']);
+        this._store.dispatch(new UI.StopLoading());
+        this._router.navigate([ '/training' ]);
       })
       .catch(error => {
-        this._uiService.loadingStateChanged.next(false);
+        this._store.dispatch(new UI.StopLoading());
         this._uiService.showSnackBar(error.message, 'Error', 5000);
       });
   }

@@ -1,53 +1,47 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
 import {AuthService} from '../auth.service';
 import {UIService} from '../../shared/global-ui/ui.service';
-import {Subscription} from 'rxjs';
+import {Observable} from 'rxjs';
+import {Store} from '@ngrx/store';
+import * as fromRoot from '../../app.reducer';
+import 'rxjs-compat/add/operator/map';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: [ './login.component.css' ]
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
-
-  loadingSubscription: Subscription;
-  loadingState: Boolean = false;
+  isLoading$: Observable<boolean>;
 
   constructor(
     private _authService: AuthService,
-    private  _uiService: UIService
+    private  _uiService: UIService,
+    private _store: Store<fromRoot.State>
   ) {
   }
 
   ngOnInit() {
-    this.loadingSubscription = this._uiService.loadingStateChanged.subscribe(isLoading => {
-      this.loadingState = isLoading;
-    });
-
+    // observable global store approach for loading state
+    this.isLoading$ = this._store.select(fromRoot.getIsLoading);
     // Login Form Group with Validation
     this.loginForm = new FormGroup({
       email: new FormControl('', {
-        validators: [Validators.required, Validators.email]
+        validators: [ Validators.required, Validators.email ]
       }),
-      password: new FormControl('', {validators: [Validators.required]})
+      password: new FormControl('', {validators: [ Validators.required ]})
     });
   }
 
   onSubmit() {
-    if (this.loginForm) {
+    if ( this.loginForm ) {
       this._authService.login({
         email: this.loginForm.value.email,
         password: this.loginForm.value.password
       });
-    }
-  }
-
-  ngOnDestroy() {
-    if ( this.loadingSubscription ) {
-      this.loadingSubscription.unsubscribe();
     }
   }
 }

@@ -10,7 +10,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-spinner [diameter]="70" *ngIf="!exercises"></mat-spinner>
+        <mat-spinner [diameter]="70" *ngIf="!exercises && (isLoading$ | async)"></mat-spinner>
       </mat-card-content>
       <mat-card-actions fxLayoutAlign="center">
         <button *ngIf="exercises" type="submit" mat-raised-button [disabled]="form.invalid">Start</button>
